@@ -59,7 +59,7 @@ namespace IRCKickBot
                         continue;
                     string[] parts = line.Remove(0, 1).Split(' ');
                     string user = parts[0].Split('!')[0];
-                    if (Regex.IsMatch(line, "\\bfuck you\\b|asshole|co+ck ?su+cker"))
+                    if (Regex.IsMatch(line, "\\bfuck you\\b|asshole|co+ck ?su+cker", RegexOptions.IgnoreCase))
                     {
                         Send("KICK " + parts[2] + " " + user + " :Offensive posts.");
                     }
