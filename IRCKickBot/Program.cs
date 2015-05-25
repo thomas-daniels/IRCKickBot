@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace IRCKickBot
 {
@@ -22,7 +23,21 @@ namespace IRCKickBot
             System.Threading.Thread.Sleep(5000);
             client.Send("MODE " + username + " -i");
             client.Join(channels);
-            client.ReceiveLoop();
+            Thread loopThr = new Thread(() =>
+            {
+                client.ReceiveLoop();
+            });
+            loopThr.Start();
+            while (true)
+            {
+                ConsoleKeyInfo cki = Console.ReadKey(true);
+                if (cki.Modifiers == ConsoleModifiers.Control && cki.Key == ConsoleKey.D)
+                {
+                    Console.WriteLine("Ctrl+D received, closing...");
+                    client.Close();
+                    break;
+                }
+            }
         }
     }
 }

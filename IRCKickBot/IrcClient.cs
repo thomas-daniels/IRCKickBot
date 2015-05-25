@@ -13,6 +13,7 @@ namespace IRCKickBot
 
         TcpClient _client = new TcpClient();
         NetworkStream _stream;
+        bool shouldClose = false;
         public IrcClient(string host, int port)
         {
             Host = host;
@@ -47,21 +48,38 @@ namespace IRCKickBot
             using (StreamReader sr = new StreamReader(_stream))
             {
                 string line;
-                while ((line = sr.ReadLine()) != null)
+                try
                 {
-                    Console.WriteLine(line);
-                    if (line.StartsWith("PING") && line[4] == ' ')
+                    while ((line = sr.ReadLine()) != null)
                     {
-                        string server = line.Split(' ')[1];
-                        Send("PONG " + server);
+                        Console.WriteLine(line);
+                        if (line.StartsWith("PING") && line[4] == ' ')
+                        {
+                            string server = line.Split(' ')[1];
+                            Send("PONG " + server);
+                        }
+                        if (!line.StartsWith(":"))
+                            continue;
+                        string[] parts = line.Remove(0, 1).Split(' ');
+                        string user = parts[0].Split('!')[0];
+                        if (Regex.IsMatch(line, "\\bfuck you\\b|asshole|co+ck ?su+cker", RegexOptions.IgnoreCase))
+                        {
+                            Send("KICK " + parts[2] + " " + user + " :Offensive posts.");
+                        }
                     }
-                    if (!line.StartsWith(":"))
-                        continue;
-                    string[] parts = line.Remove(0, 1).Split(' ');
-                    string user = parts[0].Split('!')[0];
-                    if (Regex.IsMatch(line, "\\bfuck you\\b|asshole|co+ck ?su+cker", RegexOptions.IgnoreCase))
+                }
+                catch (ObjectDisposedException)
+                {
+                    if (!shouldClose)
                     {
-                        Send("KICK " + parts[2] + " " + user + " :Offensive posts.");
+                        throw;
+                    }
+                }
+                catch (IOException)
+                {
+                    if (!shouldClose)
+                    {
+                        throw;
                     }
                 }
             }
@@ -69,6 +87,8 @@ namespace IRCKickBot
 
         public void Close()
         {
+            shouldClose = true;
+            Send("QUIT :Owner requested quit");
             _client.Close();
         }
     }
