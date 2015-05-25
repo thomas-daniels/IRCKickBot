@@ -20,7 +20,7 @@ namespace IRCKickBot
             IrcClient client = new IrcClient(host, port);
             client.Connect(username, username, password);
             System.Threading.Thread.Sleep(5000);
-            client.Send("MODE " + username + " -ix");
+            client.Send("MODE " + username + " -i");
             client.Join(channels);
             client.ReceiveLoop();
         }
