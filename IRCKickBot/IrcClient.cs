@@ -14,10 +14,12 @@ namespace IRCKickBot
         TcpClient _client = new TcpClient();
         NetworkStream _stream;
         bool shouldClose = false;
+        Regex _offensive_regex;
         public IrcClient(string host, int port)
         {
             Host = host;
             Port = port;
+            _offensive_regex = new Regex("\\bfuck you\\b|asshole|co+ck ?su+cker", RegexOptions.Compiled | RegexOptions.IgnoreCase);
         }
 
         public void Connect(string nickname, string username, string password)
@@ -62,7 +64,7 @@ namespace IRCKickBot
                             continue;
                         string[] parts = line.Remove(0, 1).Split(' ');
                         string user = parts[0].Split('!')[0];
-                        if (Regex.IsMatch(line, "\\bfuck you\\b|asshole|co+ck ?su+cker", RegexOptions.IgnoreCase))
+                        if (_offensive_regex.IsMatch(line))
                         {
                             Send("KICK " + parts[2] + " " + user + " :Offensive posts.");
                         }
