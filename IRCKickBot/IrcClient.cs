@@ -19,7 +19,7 @@ namespace IRCKickBot
         {
             Host = host;
             Port = port;
-            _offensive_regex = new Regex("\\bfuck you\\b|asshole|co+ck ?su+cker", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+            _offensive_regex = new Regex("\\bfuck you\\b|asshole|co+ck ?su+cker", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         }
 
         public void Connect(string nickname, string username, string password)
