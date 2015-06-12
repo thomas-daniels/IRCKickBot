@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Net.Sockets;
 using System.IO;
@@ -15,6 +16,8 @@ namespace IRCKickBot
         NetworkStream _stream;
         bool shouldClose = false;
         Regex _offensive_regex;
+        HashSet<string> _joinedChannels = new HashSet<string>();
+
         public IrcClient(string host, int port)
         {
             Host = host;
@@ -34,9 +37,14 @@ namespace IRCKickBot
             Send("USER " + username + " 0 * " + username);
         }
 
-        public void Join(string channel)
+        public void Join(string channels)
         {
-            Send("JOIN " + channel);
+            string[] channelList = channels.Split(',');
+            foreach (string c in channelList)
+            {
+                _joinedChannels.Add(c.Trim());
+            }
+            Send("JOIN " + channels);
         }
 
         public void Send(string message)
@@ -64,7 +72,7 @@ namespace IRCKickBot
                             continue;
                         string[] parts = line.Remove(0, 1).Split(' ');
                         string user = parts[0].Split('!')[0];
-                        if (_offensive_regex.IsMatch(line))
+                        if (_joinedChannels.Contains(parts[2]) && _offensive_regex.IsMatch(line))
                         {
                             Send("KICK " + parts[2] + " " + user + " :Offensive posts.");
                         }
