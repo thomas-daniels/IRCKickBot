@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.IO;
-using System.Text.RegularExpressions;
 
 namespace IRCKickBot
 {
@@ -15,14 +15,14 @@ namespace IRCKickBot
         TcpClient _client = new TcpClient();
         NetworkStream _stream;
         bool shouldClose = false;
-        Regex _offensive_regex;
         HashSet<string> _joinedChannels = new HashSet<string>();
+        Configuration _kickConfig;
 
-        public IrcClient(string host, int port)
+        public IrcClient(string host, int port, Configuration kickConfig)
         {
             Host = host;
             Port = port;
-            _offensive_regex = new Regex("\\bfuck you\\b|asshole|co+ck ?su+cker", RegexOptions.Compiled | RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+            _kickConfig = kickConfig;
         }
 
         public void Connect(string nickname, string username, string password)
@@ -72,9 +72,16 @@ namespace IRCKickBot
                             continue;
                         string[] parts = line.Remove(0, 1).Split(' ');
                         string user = parts[0].Split('!')[0];
-                        if (_joinedChannels.Contains(parts[2]) && _offensive_regex.IsMatch(line))
+                        if (parts[1] != "PRIVMSG")
                         {
-                            Send("KICK " + parts[2] + " " + user + " :Offensive posts.");
+                            continue;
+                        }
+                        foreach (KickPattern pattern in _kickConfig.Patterns)
+                        {
+                            if (_joinedChannels.Contains(parts[2]) && pattern.RegularExpression.IsMatch(string.Join(" ", parts.Skip(3)).Remove(0, 1)))
+                            {
+                                Send("KICK " + parts[2] + " " + user + " :" + pattern.Reason);
+                            }
                         }
                     }
                 }
