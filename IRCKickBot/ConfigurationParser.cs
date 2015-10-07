@@ -22,16 +22,7 @@ namespace IRCKickBot
                 {
                     throw new XmlException("Invalid child element in Configurations: " + elem.Name);
                 }
-                IEnumerable<XElement> nameElements = elem.Elements("Name");
-                if (!nameElements.Any())
-                {
-                    throw new XmlException("One of the Configuration elements does not have the required Name child element.");
-                }
-                else if (nameElements.Count() > 1)
-                {
-                    throw new XmlException("A Configuration element can only have one Name child element.");
-                }
-                string name = nameElements.Single().Value;
+                string name = LoadSingle(elem, "Name");
                 if (name != configName)
                 {
                     continue;
@@ -52,9 +43,52 @@ namespace IRCKickBot
                     string reason = reasonAttributes.First().Value;
                     kickPatterns.Add(new KickPattern(reason, patternElem.Value));
                 }
-                cfg = new Configuration(name, kickPatterns);
+                string host = LoadNoneOrSingle(elem, "Host");
+                string portStr = LoadNoneOrSingle(elem, "Port");
+                int? port = new int?();
+                if (portStr != null)
+                {
+                    int portI;
+                    if (int.TryParse(portStr, out portI))
+                    {
+                        port = portI;
+                    }
+                    else
+                    {
+                        throw new XmlException("The 'Port' element must contain a number.");
+                    }
+                }
+                string username = LoadNoneOrSingle(elem, "Username");
+                string password = LoadNoneOrSingle(elem, "Password");
+                string channels = LoadNoneOrSingle(elem, "Channels");
+                cfg = new Configuration(name, kickPatterns, host, port, username, password, channels);
             }
             return cfg;
+        }
+
+        private static string LoadSingle(XElement elem, string childName)
+        {
+            IEnumerable<XElement> children = elem.Elements(XName.Get(childName));
+            if (children.Count() != 1)
+            {
+                throw new XmlException(string.Format("Element '{0}' must have exactly one '{1}' child element.", elem.Name, childName));
+            }
+            return children.Single().Value;
+        }
+
+        private static string LoadNoneOrSingle(XElement elem, string childName)
+        {
+            IEnumerable<XElement> children = elem.Elements(XName.Get(childName));
+            if (children.Count() > 1)
+            {
+                throw new XmlException(string.Format("Element '{0}' cannot have more than one '{1}' as children.", elem.Name, childName));
+            }
+            if (!children.Any())
+            {
+                return null;
+            }
+            XElement child = children.Single();
+            return child.Value;
         }
     }
 }
