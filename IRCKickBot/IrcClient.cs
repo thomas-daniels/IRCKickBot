@@ -23,7 +23,7 @@ namespace IRCKickBot
             this.config = config;
         }
 
-        public void Connect()
+        public void ConnectAndJoin()
         {
             _client.Connect(config.Host, config.Port.Value);
             _stream = _client.GetStream();
@@ -33,9 +33,10 @@ namespace IRCKickBot
             }
             Send("NICK " + config.Username);
             Send("USER " + config.Username + " 0 * " + config.Username);
+            JoinChannels();
         }
 
-        public void JoinChannels()
+        private void JoinChannels()
         {
             string[] channelList = config.Channels.Split(',');
             foreach (string c in channelList)

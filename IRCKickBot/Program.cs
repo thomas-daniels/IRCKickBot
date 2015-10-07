@@ -45,10 +45,7 @@ namespace IRCKickBot
             }
             Console.Clear();
             IrcClient client = new IrcClient(conf);
-            client.Connect();
-            Thread.Sleep(5000);
-            client.Send("MODE " + conf.Username + " -i");
-            client.JoinChannels();
+            client.ConnectAndJoin();
             Thread loopThr = new Thread(() =>
             {
                 client.ReceiveLoop();
