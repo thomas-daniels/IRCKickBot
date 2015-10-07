@@ -9,9 +9,6 @@ namespace IRCKickBot
 {
     class IrcClient
     {
-        public string Host { get; }
-        public int Port { get; }
-
         TcpClient _client = new TcpClient();
         NetworkStream _stream;
         bool shouldClose = false;
