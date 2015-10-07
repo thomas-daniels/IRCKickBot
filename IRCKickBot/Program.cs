@@ -18,46 +18,37 @@ namespace IRCKickBot
                 return;
             }
             Console.WriteLine("Configuration loaded.");
-            string host = conf.Host;
-            if (host == null)
+            if (conf.Host == null)
             {
                 Console.WriteLine("Host: ");
-                host = Console.ReadLine();
+                conf.Host = Console.ReadLine();
             }
-            int port = -1;
             if (!conf.Port.HasValue)
             {
                 Console.WriteLine("Port: ");
-                port = Int32.Parse(Console.ReadLine());
+                conf.Port = Int32.Parse(Console.ReadLine());
             }
-            else
-            {
-                port = conf.Port.Value;
-            }
-            string username = conf.Username;
-            if (username == null)
+            if (conf.Username == null)
             {
                 Console.WriteLine("Username: ");
-                username = Console.ReadLine();
+                conf.Username = Console.ReadLine();
             }
-            string password = conf.Password;
-            if (password == null)
+            if (conf.Password == null)
             {
                 Console.WriteLine("Password: ");
-                password = Console.ReadLine();
+                conf.Password = Console.ReadLine();
             }
-            string channels = conf.Channels;
-            if (channels == null)
+            if (conf.Channels == null)
             {
                 Console.WriteLine("Channel(s): ");
-                channels = Console.ReadLine();
+                conf.Channels = Console.ReadLine();
             }
             Console.Clear();
-            IrcClient client = new IrcClient(host, port, conf);
-            client.Connect(username, username, password);
+            IrcClient client = new IrcClient(conf);
+            client.Connect();
             Thread.Sleep(5000);
-            client.Send("MODE " + username + " -i");
-            client.Join(channels);
+            client.Send("MODE " + conf.Username + " -i");
+            client.JoinChannels();
             Thread loopThr = new Thread(() =>
             {
                 client.ReceiveLoop();

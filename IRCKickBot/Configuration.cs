@@ -6,13 +6,13 @@ namespace IRCKickBot
 {
     class Configuration
     {
-        public string Name { get; private set; }
-        public ReadOnlyCollection<KickPattern> Patterns { get; private set; }
-        public string Host { get; private set; }
-        public int? Port { get; private set; }
-        public string Username { get; private set; }
-        public string Password { get; private set; }
-        public string Channels { get; private set; }
+        public string Name { get; set; }
+        public ReadOnlyCollection<KickPattern> Patterns { get; set; }
+        public string Host { get; set; }
+        public int? Port { get; set; }
+        public string Username { get; set; }
+        public string Password { get; set; }
+        public string Channels { get; set; }
         public Configuration(string name, IEnumerable<KickPattern> patterns, string host, int? port, string username, string password, string channels)
         {
             Name = name;

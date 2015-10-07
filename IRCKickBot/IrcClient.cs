@@ -16,35 +16,33 @@ namespace IRCKickBot
         NetworkStream _stream;
         bool shouldClose = false;
         HashSet<string> _joinedChannels = new HashSet<string>();
-        Configuration _kickConfig;
+        Configuration config = null;
 
-        public IrcClient(string host, int port, Configuration kickConfig)
+        public IrcClient(Configuration config)
         {
-            Host = host;
-            Port = port;
-            _kickConfig = kickConfig;
+            this.config = config;
         }
 
-        public void Connect(string nickname, string username, string password)
+        public void Connect()
         {
-            _client.Connect(Host, Port);
+            _client.Connect(config.Host, config.Port.Value);
             _stream = _client.GetStream();
-            if (!String.IsNullOrEmpty(password))
+            if (!String.IsNullOrEmpty(config.Password))
             {
-                Send("PASS " + password);
+                Send("PASS " + config.Password);
             }
-            Send("NICK " + nickname);
-            Send("USER " + username + " 0 * " + username);
+            Send("NICK " + config.Username);
+            Send("USER " + config.Username + " 0 * " + config.Username);
         }
 
-        public void Join(string channels)
+        public void JoinChannels()
         {
-            string[] channelList = channels.Split(',');
+            string[] channelList = config.Channels.Split(',');
             foreach (string c in channelList)
             {
                 _joinedChannels.Add(c.Trim());
             }
-            Send("JOIN " + channels);
+            Send("JOIN " + config.Channels);
         }
 
         public void Send(string message)
@@ -76,7 +74,7 @@ namespace IRCKickBot
                         {
                             continue;
                         }
-                        foreach (KickPattern pattern in _kickConfig.Patterns)
+                        foreach (KickPattern pattern in config.Patterns)
                         {
                             if (_joinedChannels.Contains(parts[2]) && pattern.RegularExpression.IsMatch(string.Join(" ", parts.Skip(3)).Remove(0, 1)))
                             {
