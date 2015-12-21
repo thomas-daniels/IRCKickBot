@@ -81,7 +81,7 @@ namespace IRCKickBot
                         {
                             if (_joinedChannels.Contains(parts[2]) && pattern.RegularExpression.IsMatch(string.Join(" ", parts.Skip(3)).Remove(0, 1)))
                             {
-                                Send("KICK " + parts[2] + " " + user + " :" + pattern.Reason);
+                                Send(string.Format("KICK {0} {1} :{2}", parts[2], user, pattern.Reason));
                             }
                         }
                     }
