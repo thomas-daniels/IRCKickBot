@@ -65,7 +65,7 @@ namespace IRCKickBot
                 string line;
                 try
                 {
-                    while ((line = sr.ReadLine()) != null)
+                    while (!shouldClose && (line = sr.ReadLine()) != null)
                     {
                         Console.WriteLine(line);
                         HandlePings(line);
