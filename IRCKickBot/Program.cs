@@ -8,10 +8,28 @@ namespace IRCKickBot
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Path to config: ");
-            string configPath = Console.ReadLine();
-            Console.WriteLine("Configuration name: ");
-            string configName = Console.ReadLine();
+            string configPath = null;
+            string configName = null;
+            if (args.Length > 0)
+            {
+                configPath = args[0];
+                Console.WriteLine("Path to config: " + configPath);
+            }
+            if (args.Length > 1)
+            {
+                configName = args[1];
+                Console.WriteLine("Configuration name: " + configName);
+            }
+            if (configPath == null)
+            {
+                Console.WriteLine("Path to config: ");
+                configPath = Console.ReadLine();
+            }
+            if (configName == null)
+            {
+                Console.WriteLine("Configuration name: ");
+                configName = Console.ReadLine();
+            }
             Configuration conf = ConfigurationParser.Load(configPath, configName);
             if (conf == null)
             {
