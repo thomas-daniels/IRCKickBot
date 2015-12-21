@@ -62,7 +62,7 @@ namespace IRCKickBot
                 string username = LoadNoneOrSingle(elem, "Username");
                 string password = LoadNoneOrSingle(elem, "Password");
                 string channels = LoadNoneOrSingle(elem, "Channels");
-                cfg = new Configuration(name, kickPatterns, host, port, username, password, channels);
+                cfg = new Configuration(kickPatterns, host, port, username, password, channels);
             }
             return cfg;
         }
