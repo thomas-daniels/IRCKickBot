@@ -6,7 +6,7 @@ using System.Xml.Linq;
 
 namespace IRCKickBot
 {
-    class ConfigurationParser
+    static class ConfigurationParser
     {
         public static Configuration Load(string filename, string configName)
         {
