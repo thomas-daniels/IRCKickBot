@@ -44,9 +44,9 @@ namespace IRCKickBot
             Send("JOIN " + config.Channels);
         }
 
-        public void Send(string message)
+        public void Send(string command)
         {
-            byte[] buffer = Encoding.ASCII.GetBytes(message + "\r\n");
+            byte[] buffer = Encoding.ASCII.GetBytes(command + "\r\n");
             _stream.Write(buffer, 0, buffer.Length);
         }
 
