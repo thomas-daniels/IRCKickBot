@@ -9,15 +9,15 @@ namespace IRCKickBot
         public ReadOnlyCollection<KickPattern> Patterns { get; set; }
         public string Host { get; set; }
         public int? Port { get; set; }
-        public string Username { get; set; }
+        public string Nickname { get; set; }
         public string Password { get; set; }
         public string Channels { get; set; }
-        public Configuration(IEnumerable<KickPattern> patterns, string host, int? port, string username, string password, string channels)
+        public Configuration(IEnumerable<KickPattern> patterns, string host, int? port, string nickname, string password, string channels)
         {
             Patterns = new ReadOnlyCollection<KickPattern>(patterns.ToList());
             Host = host;
             Port = port;
-            Username = username;
+            Nickname = nickname;
             Password = password;
             Channels = channels;
         }

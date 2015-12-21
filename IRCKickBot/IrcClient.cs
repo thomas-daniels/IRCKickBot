@@ -29,8 +29,8 @@ namespace IRCKickBot
             {
                 Send("PASS " + config.Password);
             }
-            Send("NICK " + config.Username);
-            Send("USER " + config.Username + " 0 * " + config.Username);
+            Send("NICK " + config.Nickname);
+            Send("USER " + config.Nickname + " 0 * " + config.Nickname);
             JoinChannels();
         }
 

@@ -48,10 +48,10 @@ namespace IRCKickBot
                 Console.WriteLine(Resources.port);
                 conf.Port = Int32.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
             }
-            if (conf.Username == null)
+            if (conf.Nickname == null)
             {
                 Console.WriteLine(Resources.nickname);
-                conf.Username = Console.ReadLine();
+                conf.Nickname = Console.ReadLine();
             }
             if (conf.Password == null)
             {
