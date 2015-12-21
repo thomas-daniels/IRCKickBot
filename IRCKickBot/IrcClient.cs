@@ -49,6 +49,15 @@ namespace IRCKickBot
             _stream.Write(buffer, 0, buffer.Length);
         }
 
+        private void HandlePings(string line)
+        {
+            if (line.StartsWith("PING") && line[4] == ' ')
+            {
+                string server = line.Split(' ')[1];
+                Send("PONG " + server);
+            }
+        }
+
         public void ReceiveLoop()
         {
             using (StreamReader sr = new StreamReader(_stream))
@@ -59,11 +68,7 @@ namespace IRCKickBot
                     while ((line = sr.ReadLine()) != null)
                     {
                         Console.WriteLine(line);
-                        if (line.StartsWith("PING") && line[4] == ' ')
-                        {
-                            string server = line.Split(' ')[1];
-                            Send("PONG " + server);
-                        }
+                        HandlePings(line);
                         if (!line.StartsWith(":"))
                             continue;
                         string[] parts = line.Remove(0, 1).Split(' ');
