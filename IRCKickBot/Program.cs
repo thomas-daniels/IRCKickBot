@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Threading;
 
 namespace IRCKickBot
@@ -26,7 +27,7 @@ namespace IRCKickBot
             if (!conf.Port.HasValue)
             {
                 Console.WriteLine("Port: ");
-                conf.Port = Int32.Parse(Console.ReadLine());
+                conf.Port = Int32.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
             }
             if (conf.Username == null)
             {

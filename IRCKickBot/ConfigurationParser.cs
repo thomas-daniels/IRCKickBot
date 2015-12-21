@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
@@ -71,7 +72,7 @@ namespace IRCKickBot
             IEnumerable<XElement> children = elem.Elements(XName.Get(childName));
             if (children.Count() != 1)
             {
-                throw new XmlException(string.Format("Element '{0}' must have exactly one '{1}' child element.", elem.Name, childName));
+                throw new XmlException(string.Format(CultureInfo.InvariantCulture, "Element '{0}' must have exactly one '{1}' child element.", elem.Name, childName));
             }
             return children.Single().Value;
         }
@@ -81,7 +82,7 @@ namespace IRCKickBot
             IEnumerable<XElement> children = elem.Elements(XName.Get(childName));
             if (children.Count() > 1)
             {
-                throw new XmlException(string.Format("Element '{0}' cannot have more than one '{1}' as children.", elem.Name, childName));
+                throw new XmlException(string.Format(CultureInfo.InvariantCulture, "Element '{0}' cannot have more than one '{1}' as children.", elem.Name, childName));
             }
             if (!children.Any())
             {

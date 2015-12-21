@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Net.Sockets;
 using System.IO;
+using System.Globalization;
 
 namespace IRCKickBot
 {
@@ -51,7 +52,7 @@ namespace IRCKickBot
 
         private void HandlePings(string line)
         {
-            if (line.StartsWith("PING") && line[4] == ' ')
+            if (line.StartsWith("PING", StringComparison.Ordinal) && line[4] == ' ')
             {
                 string server = line.Split(' ')[1];
                 Send("PONG " + server);
@@ -69,7 +70,7 @@ namespace IRCKickBot
                     {
                         Console.WriteLine(line);
                         HandlePings(line);
-                        if (!line.StartsWith(":"))
+                        if (!line.StartsWith(":", StringComparison.Ordinal))
                             continue;
                         string[] parts = line.Remove(0, 1).Split(' ');
                         string user = parts[0].Split('!')[0];
@@ -81,7 +82,7 @@ namespace IRCKickBot
                         {
                             if (_joinedChannels.Contains(parts[2]) && pattern.RegularExpression.IsMatch(string.Join(" ", parts.Skip(3)).Remove(0, 1)))
                             {
-                                Send(string.Format("KICK {0} {1} :{2}", parts[2], user, pattern.Reason));
+                                Send(string.Format(CultureInfo.InvariantCulture, "KICK {0} {1} :{2}", parts[2], user, pattern.Reason));
                             }
                         }
                     }
