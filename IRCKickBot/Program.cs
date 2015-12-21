@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Globalization;
 using System.Threading;
+using IRCKickBot.Properties;
 
 namespace IRCKickBot
 {
@@ -13,53 +14,53 @@ namespace IRCKickBot
             if (args.Length > 0)
             {
                 configPath = args[0];
-                Console.WriteLine("Path to config: " + configPath);
+                Console.WriteLine(Resources.pathToConfig + configPath);
             }
             if (args.Length > 1)
             {
                 configName = args[1];
-                Console.WriteLine("Configuration name: " + configName);
+                Console.WriteLine(Resources.configurationName + configName);
             }
             if (configPath == null)
             {
-                Console.WriteLine("Path to config: ");
+                Console.WriteLine(Resources.pathToConfig);
                 configPath = Console.ReadLine();
             }
             if (configName == null)
             {
-                Console.WriteLine("Configuration name: ");
+                Console.WriteLine(Resources.configurationName);
                 configName = Console.ReadLine();
             }
             Configuration conf = ConfigurationParser.Load(configPath, configName);
             if (conf == null)
             {
-                Console.WriteLine("No such configuration found.");
+                Console.WriteLine(Resources.configNotFound);
                 return;
             }
-            Console.WriteLine("Configuration loaded.");
+            Console.WriteLine(Resources.configLoaded);
             if (conf.Host == null)
             {
-                Console.WriteLine("Host: ");
+                Console.WriteLine(Resources.host);
                 conf.Host = Console.ReadLine();
             }
             if (!conf.Port.HasValue)
             {
-                Console.WriteLine("Port: ");
+                Console.WriteLine(Resources.port);
                 conf.Port = Int32.Parse(Console.ReadLine(), CultureInfo.InvariantCulture);
             }
             if (conf.Username == null)
             {
-                Console.WriteLine("Username: ");
+                Console.WriteLine(Resources.nickname);
                 conf.Username = Console.ReadLine();
             }
             if (conf.Password == null)
             {
-                Console.WriteLine("Password: ");
+                Console.WriteLine(Resources.password);
                 conf.Password = Console.ReadLine();
             }
             if (conf.Channels == null)
             {
-                Console.WriteLine("Channel(s): ");
+                Console.WriteLine(Resources.channels);
                 conf.Channels = Console.ReadLine();
             }
             Console.Clear();
@@ -75,7 +76,7 @@ namespace IRCKickBot
                 ConsoleKeyInfo cki = Console.ReadKey(true);
                 if (cki.Modifiers == ConsoleModifiers.Control && cki.Key == ConsoleKey.D)
                 {
-                    Console.WriteLine("Ctrl+D received, closing...");
+                    Console.WriteLine(Resources.ctrlDClosing);
                     client.Close();
                     break;
                 }
