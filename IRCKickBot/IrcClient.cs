@@ -78,11 +78,28 @@ namespace IRCKickBot
                         {
                             continue;
                         }
+                        string posted = string.Join(" ", parts.Skip(3)).Remove(0, 1);
+                        bool kicked = false;
                         foreach (KickPattern pattern in config.Patterns)
                         {
-                            if (_joinedChannels.Contains(parts[2]) && pattern.RegularExpression.IsMatch(string.Join(" ", parts.Skip(3)).Remove(0, 1)))
+                            if (_joinedChannels.Contains(parts[2]) && pattern.RegularExpression.IsMatch(posted))
                             {
                                 Send(string.Format(CultureInfo.InvariantCulture, "KICK {0} {1} :{2}", parts[2], user, pattern.Reason));
+                                kicked = true;
+                                break;
+                            }
+                        }
+                        if (kicked)
+                        {
+                            continue; // To avoid that the next foreach loop gets entered.
+                        }
+                        foreach (Plugin plugin in config.Plugins)
+                        {
+                            string kickReason = plugin.ShouldKick(posted);
+                            if (kickReason != null)
+                            {
+                                Send(string.Format(CultureInfo.InvariantCulture, "KICK {0} {1} :{2}", parts[2], user, kickReason));
+                                break;
                             }
                         }
                     }
